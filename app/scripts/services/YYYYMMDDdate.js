@@ -4,8 +4,10 @@ angular.module('qldarchApp').service('YYYYMMDDdate', function() {
   var formatdate = {
     formatDate : function(date) {
       if (!(date instanceof Date)) {
+        
         date = new Date(date);
       }
+      
       var day = '' + date.getDate();
       if (day.length < 2) {
         day = '0' + day;
@@ -23,6 +25,6 @@ angular.module('qldarchApp').service('YYYYMMDDdate', function() {
       return date;
     }
   };
-
+  
   return formatdate;
 });

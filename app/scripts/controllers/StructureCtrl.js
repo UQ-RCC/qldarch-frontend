@@ -230,43 +230,50 @@ angular.module('qldarchApp').controller('StructureCtrl', function($scope, struct
 						var rowsToConfirm = {};
 	
 						var promises = [];
-	
-						if (row.associateFirm != null) {
-							var firms = row.associateFirm.split(';');
-							promises.push(Promise.all(firms.map(function(firm) {
-								return ArchObj.loadSimilarity(firm.trim()).then(function(res) {
-									if (res != null) {
-										var firmsA = res.filter(function(firm) {
-											return firm.type === 'firm'
-										});
-										var minDistance = Infinity;
-										var mostSimilarRecord = null;
-	
-										if (firmsA.length > 1) {
-											firmsA.forEach(function(record) {
-												var distance = Utils.levenshteinDistance(firm.trim().toLowerCase(), record.label.toLowerCase());
-												if (distance < minDistance) {
-													minDistance = distance;
-													mostSimilarRecord = record;
-												}
+						try{
+							if (row.AssociateFirm != null) {
+								var firms = row.AssociateFirm.split(';');
+								promises.push(Promise.all(firms.map(function(firm) {
+									return ArchObj.loadSimilarity(firm.trim()).then(function(res) {
+										if (res != null) {
+											var firmsA = res.filter(function(firm) {
+												return firm.type === 'firm'
 											});
-											rowsToConfirm.rowNumber = rowNumber;
-											rowsToConfirm.index = index;
-											rowsToConfirm.existingFirm = firm.trim();
-											rowsToConfirm.similarFirm = mostSimilarRecord;
-											rowsToConfirm.confirmed = false;
-											
-										} else if (firmsA.length == 1) {
-											if (firmsA[0].label.trim().toLowerCase() === firm.trim().toLowerCase()){
-
-												params.associateFirm = firmsA[0];
-												
-											}
-											else {
+											var minDistance = Infinity;
+											var mostSimilarRecord = null;
+		
+											if (firmsA.length > 1) {
+												firmsA.forEach(function(record) {
+													var distance = Utils.levenshteinDistance(firm.trim().toLowerCase(), record.label.toLowerCase());
+													if (distance < minDistance) {
+														minDistance = distance;
+														mostSimilarRecord = record;
+													}
+												});
 												rowsToConfirm.rowNumber = rowNumber;
 												rowsToConfirm.index = index;
 												rowsToConfirm.existingFirm = firm.trim();
-												rowsToConfirm.similarFirm = firmsA[0];
+												rowsToConfirm.similarFirm = mostSimilarRecord;
+												rowsToConfirm.confirmed = false;
+												
+											} else if (firmsA.length == 1) {
+												if (firmsA[0].label.trim().toLowerCase() === firm.trim().toLowerCase()){
+	
+													params.associateFirm = firmsA[0];
+													
+												}
+												else {
+													rowsToConfirm.rowNumber = rowNumber;
+													rowsToConfirm.index = index;
+													rowsToConfirm.existingFirm = firm.trim();
+													rowsToConfirm.similarFirm = firmsA[0];
+													rowsToConfirm.confirmed = false;
+													
+												}
+											} else {
+												rowsToConfirm.rowNumber = rowNumber;
+												rowsToConfirm.index = index;
+												rowsToConfirm.newFirm = firm;
 												rowsToConfirm.confirmed = false;
 												
 											}
@@ -277,53 +284,53 @@ angular.module('qldarchApp').controller('StructureCtrl', function($scope, struct
 											rowsToConfirm.confirmed = false;
 											
 										}
-									} else {
-										rowsToConfirm.rowNumber = rowNumber;
-										rowsToConfirm.index = index;
-										rowsToConfirm.newFirm = firm;
-										rowsToConfirm.confirmed = false;
-										
-									}
-								});
-							})));
-						}
-	
-						if (row.associateArchitect != null) {
-							var architects = row.associateArchitect.split(';');
-							promises.push(Promise.all(architects.map(function(architect) {
-								return ArchObj.loadSimilarity(architect.trim()).then(function(res) {
-									if (res != null) {
-										var architectA = res.filter(function(obj) {
-											return obj.type === 'person';
-										});
-										var minDistance = Infinity;
-										var mostSimilarRecord = null;
-	
-										if (architectA.length > 1) {
-											architectA.forEach(function(record) {
-												var distance = Utils.levenshteinDistance(architect.trim().toLowerCase(), record.label.toLowerCase());
-												if (distance < minDistance) {
-													minDistance = distance;
-													mostSimilarRecord = record;
-												}
+									});
+								})));
+							}
+		
+							if (row.AssociateArchitect != null) {
+								var architects = row.AssociateArchitect.split(';');
+								promises.push(Promise.all(architects.map(function(architect) {
+									return ArchObj.loadSimilarity(architect.trim()).then(function(res) {
+										if (res != null) {
+											var architectA = res.filter(function(obj) {
+												return obj.type === 'person';
 											});
-											rowsToConfirm.rowNumber = rowNumber;
-											rowsToConfirm.index = index;
-											rowsToConfirm.existingArchitect = architect.trim();
-											rowsToConfirm.similarArchitect = mostSimilarRecord;
-											rowsToConfirm.confirmed = false;
-											
-										} else if (architectA.length == 1) {
-											if (architectA[0].label.trim().toLowerCase() === architect.trim().toLowerCase()){
-
-												params.associateArchitect = architectA[0];
-												
-											}
-											else {
+											var minDistance = Infinity;
+											var mostSimilarRecord = null;
+		
+											if (architectA.length > 1) {
+												architectA.forEach(function(record) {
+													var distance = Utils.levenshteinDistance(architect.trim().toLowerCase(), record.label.toLowerCase());
+													if (distance < minDistance) {
+														minDistance = distance;
+														mostSimilarRecord = record;
+													}
+												});
 												rowsToConfirm.rowNumber = rowNumber;
 												rowsToConfirm.index = index;
 												rowsToConfirm.existingArchitect = architect.trim();
-												rowsToConfirm.similarArchitect = architectA[0];
+												rowsToConfirm.similarArchitect = mostSimilarRecord;
+												rowsToConfirm.confirmed = false;
+												
+											} else if (architectA.length == 1) {
+												if (architectA[0].label.trim().toLowerCase() === architect.trim().toLowerCase()){
+	
+													params.associateArchitect = architectA[0];
+													
+												}
+												else {
+													rowsToConfirm.rowNumber = rowNumber;
+													rowsToConfirm.index = index;
+													rowsToConfirm.existingArchitect = architect.trim();
+													rowsToConfirm.similarArchitect = architectA[0];
+													rowsToConfirm.confirmed = false;
+													
+												}
+											} else {
+												rowsToConfirm.rowNumber = rowNumber;
+												rowsToConfirm.index = index;
+												rowsToConfirm.newArchitect = architect;
 												rowsToConfirm.confirmed = false;
 												
 											}
@@ -334,37 +341,56 @@ angular.module('qldarchApp').controller('StructureCtrl', function($scope, struct
 											rowsToConfirm.confirmed = false;
 											
 										}
-									} else {
-										rowsToConfirm.rowNumber = rowNumber;
-										rowsToConfirm.index = index;
-										rowsToConfirm.newArchitect = architect;
-										rowsToConfirm.confirmed = false;
-										
-									}
-								});
-							})));
+									});
+								})));
+							}
+		
+							if (row.BuildingTypology != null)
+								params.typologies = row.BuildingTypology.trim();
+							if (row.BuildingName != null)
+								params.label = row.BuildingName.trim();
+							if (row.Address != null) {
+								params.location = row.Address.trim();
+								if(row.Latitude == null || row.Longitude == null) {
+									$.getJSON('https://nominatim.openstreetmap.org/search?q=' + params.location+'&format=json',
+										function(data) {
+											if (data.length > 0) {
+												params.latitude = data[0].lat;
+												params.longitude = data[0].lon;
+											}
+										});
+								}
+	
+							}
+							if (row.Latitude != null)
+								params.latitude = row.Latitude;
+							if (row.Longitude != null)
+								params.longitude = row.Longitude;
+							if (row.Australian != null)
+								params.australian = row.Australian;
+							if (row.Completion != null) {
+								var parts = row.Completion.trim().split('-')
+
+								if(parts.length === 3) {
+									params.completionpd = 0;
+								}else if (parts.length === 2) {
+									params.completionpd = (new Date(+parts[1], parts[0] - 1, 0)).getDate();
+								}else if (parts.length === 1) {
+									var y = +parts[2];
+									params.completionpd = !(y%(y%25?4:16)) ? 366 : 365;
+								}
+								
+								params.completion = parts.reverse().join('-');
+								
+							}
+							if (row.Demolished != null)
+								params.demolished = row.Demolished;
+							if (row.Summary != null)
+								params.summary = row.Summary.trim();
+						}catch(error){
+							toaster.pop('error', 'File input error ' + error.message || error);
 						}
 	
-						if (row.BuildingTypology != null)
-							params.typologies = row.BuildingTypology.trim();
-						if (row.BuildingName != null)
-							params.label = row.BuildingName.trim();
-						if (row.StitchedAddress != null)
-							params.location = row.StitchedAddress.trim();
-						if (row.Latitude != null)
-							params.latitude = row.Latitude;
-						if (row.Longitude != null)
-							params.longitude = row.Longitude;
-						if (row.australian != null)
-							params.australian = row.australian;
-						if (row.completion != null) {
-							var completionDate = new Date(row.completion.trim());
-							params.completion = completionDate;
-						}
-						if (row.demolished != null)
-							params.demolished = row.demolished;
-						if (row.summary != null)
-							params.summary = row.summary.trim();
 	
 						projects.push(params);
 	
@@ -604,6 +630,8 @@ angular.module('qldarchApp').controller('StructureCtrl', function($scope, struct
 			ngProgress.color('#ea1d5d');
 			ngProgress.start();
 			$scope.processing =true;
+			console.log("$scope.payload")
+			console.log($scope.payload)
 			promise =  ArchObj.createBulkStructures($scope.payload).then(function(res) {
 			console.log("res")
 			console.log(res)

@@ -501,7 +501,13 @@ angular.module('qldarchApp').factory('ArchObj', function($http, $cacheFactory, $
       console.log(projects);
       var projectList = [];
       angular.forEach(projects, function (project) {
-        console.log(JSON.stringify(project));
+        
+        
+        project.completion = YYYYMMDDdate.formatDate(project.completion);
+        
+        if ( project.completion === null) {
+          delete  project.completion;
+        }
         projectList.push(JSON.stringify(project));
       });
       payload.projects = projectList;
@@ -516,6 +522,7 @@ angular.module('qldarchApp').factory('ArchObj', function($http, $cacheFactory, $
           relationships.push(architect.id);
         });
       }
+      
       
 
       
@@ -535,8 +542,7 @@ angular.module('qldarchApp').factory('ArchObj', function($http, $cacheFactory, $
         },
 
     }).then(function(response) {
-      console.log('after rest call' +response);
-      console.log(response);
+      
       toaster.pop('success', ' Projects created');
       var dataList = [];
       if (response.data.length > 0) {
