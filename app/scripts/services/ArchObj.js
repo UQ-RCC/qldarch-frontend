@@ -508,7 +508,12 @@ angular.module('qldarchApp').factory('ArchObj', function($http, $cacheFactory, $
         if ( project.completion === null) {
           delete  project.completion;
         }
-        projectList.push(JSON.stringify(project));
+        console.log("project.label")
+        console.log(project.label)
+        if (project.label) {
+          projectList.push(JSON.stringify(project));
+        }
+        //projectList.push(JSON.stringify(project));
       });
       payload.projects = projectList;
       var relationships = [];

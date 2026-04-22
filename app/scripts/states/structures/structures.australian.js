@@ -8,11 +8,14 @@ angular.module('qldarchApp').config(function($stateProvider) {
     resolve : {
       structures : [ 'AggArchObjs', '$filter', function(AggArchObjs, $filter) {
         return AggArchObjs.loadProjects().then(function(data) {
-          return $filter('filter')(data, function(structure) {
+          console.log('Total projects loaded aus:', data.length);
+          var australianStructures = $filter('filter')(data, function(structure) {
             if (structure.australian === true) {
               return structure;
             }
           });
+          console.log('Australian structures:', australianStructures.length);
+          return australianStructures;
         }).catch(function() {
           //console.log('unable to load australian projects');
           return {};

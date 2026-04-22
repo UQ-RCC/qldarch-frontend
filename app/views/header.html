@@ -64,11 +64,20 @@
             </ul>
             <!-- /Logged in user -->
             <!-- Search form -->
-            <form class="navbar-form" role="search">
+            <form class="navbar-form" role="search" onsubmit="return false;">
               <div class="input-group">
-                <input type="text" class="form-control" ng-model="globalSearch.query" placeholder="Search"
-                  uib-typeahead="entity.name for entity in globalSearch($viewValue)" typeahead-loading="loadingLocations" class="form-control"
-                  typeahead-min-length="1" typeahead-on-select="globalSearchOnSelect($item, $model, $label)" /> <span class="input-group-addon">
+                <input type="text" class="form-control" 
+                  ng-model="globalSearchModel.query" 
+                  placeholder="Search"
+                  uib-typeahead="entity.name for entity in globalSearchTypeahead($viewValue)" 
+                  typeahead-loading="loadingLocations" 
+                  class="form-control"
+                  typeahead-min-length="2" 
+                  typeahead-wait-ms="300" 
+                  typeahead-on-select="globalSearchOnSelect($item, $model, $label)" 
+                  typeahead-append-to-body="true"
+                  typeahead-select-on-exact="false"
+                  typeahead-focus-first="false"/> <span class="input-group-addon">
                   <i ng-show="!loadingLocations" class="fa fa-search"></i> <i ng-show="loadingLocations" class="fa fa-spin fa-refresh"></i>
                 </span>
               </div>

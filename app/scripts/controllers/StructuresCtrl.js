@@ -43,21 +43,24 @@ angular.module('qldarchApp').controller(
       }
 
       $scope.structures = $filter('filter')(GraphHelper.graphValues(structures), function(structure) {
-        var startLetter = structure.label.substring(0, 1).toUpperCase();
-        if (!isNaN(startLetter)) {
-          $scope.indexes['#'] = true;
-        } else if (isLetter(startLetter)) {
-          $scope.indexes[startLetter] = true;
-        }
-        if ($stateParams.index && $stateParams.index.length === 1) {
-          if (!isNaN(startLetter) && '#' === $stateParams.index) {
-            return true;
-          } else if (isLetter($stateParams.index) && startLetter === $stateParams.index) {
-            return true;
+        if(structure.label) {
+          var startLetter = structure.label.substring(0, 1).toUpperCase();
+          if (!isNaN(startLetter)) {
+            $scope.indexes['#'] = true;
+          } else if (isLetter(startLetter)) {
+            $scope.indexes[startLetter] = true;
           }
-          return false;
-        }
-        return true;
+          if ($stateParams.index && $stateParams.index.length === 1) {
+            if (!isNaN(startLetter) && '#' === $stateParams.index) {
+              return true;
+            } else if (isLetter($stateParams.index) && startLetter === $stateParams.index) {
+              return true;
+            }
+            return false;
+          }
+          return true;
+
+       }
       });
 
       $scope.structures = $filter('orderBy')(GraphHelper.graphValues($scope.structures), function(structure) {
@@ -80,6 +83,7 @@ angular.module('qldarchApp').controller(
           var markers = L.markerClusterGroup();
           var latlon = [];
           var structure, i, mkrIcon, icon;
+          console.log('structures are', $scope.structures);
           for (i=0; i<$scope.structures.length; ++i) {
             structure = $scope.structures[i];
             if (angular.isDefined(structure.lat) && angular.isDefined(structure.lng)) {
@@ -95,6 +99,7 @@ angular.module('qldarchApp').controller(
               latlon.push(mkr);
             }
           }
+          console.log('Marker positions:', latlon);
           map.addLayer(markers);
           map.fitBounds(new L.LatLngBounds(latlon));
         });

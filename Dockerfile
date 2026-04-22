@@ -6,7 +6,7 @@ WORKDIR /app
 
 # Step 1: Getting the Global Tools
 # Install NPM
-RUN npm install -g npm
+RUN npm install -g npm@7.16.0
 
 # Install the dev tools - yo, bower, grunt
 RUN npm install -g yo bower grunt-cli
@@ -16,7 +16,9 @@ RUN npm install -g generator-angular
 
 # Step 2: Installing Project Dependencies
 # Copy package.json and package-lock.json to leverage Docker cache
-COPY package*.json ./
+#COPY package*.json ./
+#COPY bower.json ./
+COPY . .
 RUN npm install
 
 # Run npx bower install

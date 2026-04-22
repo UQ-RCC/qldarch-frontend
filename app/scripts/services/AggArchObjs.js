@@ -50,7 +50,8 @@ angular.module('qldarchApp').factory('AggArchObjs', function($http, $cacheFactor
     },
     loadProjects : function() {
       return $http.get(Uris.WS_ROOT + 'projects').then(function(result) {
-        //console.log('load projects');
+        console.log('load projects');
+        console.log('Total projects returned:', result.data.length);
         return result.data;
       });
     },

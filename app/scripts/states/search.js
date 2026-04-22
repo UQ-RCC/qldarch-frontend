@@ -66,14 +66,15 @@ angular.module('qldarchApp').config(
                 var query = $location.search().query;
                 var q = '';
                 if (angular.isDefined(query)) {
-                  q = (query).replace(WordService.spclCharsLucene, '') + '*';
-                }
+                  q = (query).replace(WordService.spclCharsLucene, '').trim().toLowerCase() + '*';
+              }
                 var fieldquery = $location.search().fieldquery;
                 var fq = '';
                 if (angular.isDefined(fieldquery)) {
-                  fq = fieldquery;
+                  fq = fieldquery.toLowerCase();
                 }
-                var url = Uris.WS_ROOT + 'search?q=' + q + fq + '&p=0';
+                var combinedQuery = encodeURIComponent(q + fq);
+                var url = Uris.WS_ROOT + 'search?q=' + combinedQuery + '&p=0';
                 return $http.get(url + '&pc=0').then(
                     function(resp) {
                       return $http.get(url + '&pc=' + resp.data.hits).then(

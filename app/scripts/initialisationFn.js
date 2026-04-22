@@ -35,8 +35,10 @@ angular.module('qldarchApp').run(function($rootScope, $route, $location, ngProgr
     }
   });
 
-  $rootScope.globalSearch = {};
-  $rootScope.globalSearch.query = '';
+ /*  $rootScope.globalSearch = {};
+  $rootScope.globalSearch.query = ''; */
+  $rootScope.globalSearch = { query: '' };
+  $rootScope.globalSearchModel = { query: '' };
 
   // Adds the slim progress bar
   $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
@@ -49,7 +51,7 @@ angular.module('qldarchApp').run(function($rootScope, $route, $location, ngProgr
   });
   $rootScope.$on('$stateChangeSuccess', function() {
     ngProgress.complete();
-    $rootScope.globalSearch.query = '';
+    $rootScope.globalSearchModel.query = '';
   });
   $rootScope.$on('$stateChangeError', function() {
     ngProgress.reset();
@@ -62,8 +64,79 @@ angular.module('qldarchApp').run(function($rootScope, $route, $location, ngProgr
    * @param val
    * @returns {Promise|*}
    */
-  $rootScope.globalSearch = function(val) {
-    var syntax = '* AND (type:person OR type:firm OR type:structure) AND category:archobj';
+  var searchTimeout = null;
+
+$rootScope.globalSearchTypeahead = function(val) {
+  console.log('globalSearchTypeahead called with:', val);
+  if (!val || val.trim() === '') {
+    return [];
+  }
+
+  // Cancel any pending request
+  if (searchTimeout) {
+    clearTimeout(searchTimeout);
+  }
+
+  var sanitizedVal = val.replace(WordService.spclCharsLucene, '').trim().toLowerCase();
+  var url = Uris.WS_ROOT + 'search?q=' + encodeURIComponent(
+    '(label:' + sanitizedVal + '* OR all:' + sanitizedVal + '*) AND (type:person OR type:firm OR type:structure) AND category:archobj'
+  ) + '&p=0&pc=100';
+
+  return $http.get(url).then(function(output) {
+    var results = GraphHelper.graphValues(output.data.documents);
+
+    results = $filter('filter')(results, function(result) {
+      return (result.type === 'person' || result.type === 'firm' || result.type === 'structure');
+    });
+
+    results = $filter('orderBy')(results, function(result) {
+      var label = result.label ? result.label.toLowerCase() : '';
+      var searchTerm = sanitizedVal.toLowerCase();
+      if (label.indexOf(searchTerm) === 0) {
+        return '0' + label;
+      } else if (label.indexOf(searchTerm) > 0) {
+        return '1' + label;
+      } else {
+        return '2' + label;
+      }
+    });
+
+    results = results.slice(0, 10);
+
+    angular.forEach(results, function(result) {
+      result.name = result.label;
+      var label = result.name + ' (' + result.type.charAt(0).toUpperCase() + result.type.slice(1) + ')';
+      if (result.type === 'structure') {
+        label = result.name + ' (Project)';
+      }
+      result.name = label;
+    });
+
+    var search = {
+      name: 'Search for \'' + val + '\'',
+      type: 'search',
+      query: val
+    };
+
+    results.unshift(search);
+    console.log('Returning results:', results.map(function(r) { return r.name; }));
+    return results;
+
+  }, function(error) {
+    console.error('Search failed:', error);
+    return [{
+      name: 'Search for \'' + val + '\'',
+      type: 'search',
+      query: val
+    }];
+  });
+};
+  /* $rootScope.globalSearch = function(val) {
+    if (!val || val.trim() === '') {
+      return [];
+    }
+    var sanitizedVal = val.replace(WordService.spclCharsLucene, '').trim();
+    var syntax = ' AND (type:person OR type:firm OR type:structure) AND category:archobj';
     return $http.get(Uris.WS_ROOT + 'search?q=' + val.replace(WordService.spclCharsLucene, '') + syntax + '&p=0&pc=20').then(function(output) {
       var results = GraphHelper.graphValues(output.data.documents);
       results = $filter('filter')(results, function(result) {
@@ -88,10 +161,11 @@ angular.module('qldarchApp').run(function($rootScope, $route, $location, ngProgr
         type : 'search',
         query : val
       };
+      console.log('results are', search, results);
       results.unshift(search);
       return results;
     });
-  };
+  }; */
 
   /**
    * 
@@ -100,9 +174,12 @@ angular.module('qldarchApp').run(function($rootScope, $route, $location, ngProgr
    * @param $label
    */
   $rootScope.globalSearchOnSelect = function($item, $model) {
+    
+    
     if ($item.type === 'search') {
       // special case
-      $rootScope.globalSearch.query = $item.query;
+     // $rootScope.globalSearch.query = $item.query;
+      $rootScope.globalSearchModel.query = $item.query;
       $model = $item.query;
       $location.search({});
       $location.path('/search');
