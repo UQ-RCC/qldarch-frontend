@@ -15,7 +15,7 @@
   <section>
     <div class="container">
       <p class="text-muted" ng-hide="results.length">No results found</p>
-      <div ng-repeat="result in results | orderBy:'-score'" class="row" style="margin-bottom: 30px;">
+      <div ng-repeat="result in results" class="row" style="margin-bottom: 30px;">
         <img src="" alt="">
         <div class="col-md-1">
           <img ng-src="{{Uris.WS_MEDIA+result.media+'?dimension=68x68'}}" class="img-responsive" ng-if="result.media">

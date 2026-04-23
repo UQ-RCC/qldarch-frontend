@@ -101,7 +101,7 @@ $rootScope.globalSearchTypeahead = function(val) {
       }
     });
 
-    results = results.slice(0, 10);
+    results = results.slice(0,10);
 
     angular.forEach(results, function(result) {
       result.name = result.label;
@@ -120,6 +120,7 @@ $rootScope.globalSearchTypeahead = function(val) {
 
     results.unshift(search);
     console.log('Returning results:', results.map(function(r) { return r.name; }));
+
     return results;
 
   }, function(error) {
@@ -173,9 +174,11 @@ $rootScope.globalSearchTypeahead = function(val) {
    * @param $model
    * @param $label
    */
-  $rootScope.globalSearchOnSelect = function($item, $model) {
-    
-    
+  $rootScope.globalSearchOnSelect = function($item, $model, $label) {
+    console.log('Selected item:', $item);
+    console.log('Selected model:', $model);
+    console.log('Selected label:', $label);
+
     if ($item.type === 'search') {
       // special case
      // $rootScope.globalSearch.query = $item.query;
@@ -186,7 +189,7 @@ $rootScope.globalSearchTypeahead = function(val) {
       $location.search('query', $item.query);
     } else {
       // already a result
-      //console.log('path is', $item.type);
+      console.log('path is', $item);
       var params = {};
       if ($item.type === 'person' && $item.architect === true) {
         params.architectId = $item.id;

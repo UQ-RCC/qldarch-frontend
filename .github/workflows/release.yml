@@ -24,9 +24,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v3
         with:
-          node-version: '14.x'
+          node-version: '18.x'
 
       - name: Setup build tools
         run: npm install -g yo bower grunt-cli generator-karma generator-angular

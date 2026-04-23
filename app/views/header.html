@@ -73,15 +73,16 @@
                   typeahead-loading="loadingLocations" 
                   class="form-control"
                   typeahead-min-length="2" 
-                  typeahead-wait-ms="300" 
+                  typeahead-wait-ms="600" 
                   typeahead-on-select="globalSearchOnSelect($item, $model, $label)" 
                   typeahead-append-to-body="true"
                   typeahead-select-on-exact="false"
-                  typeahead-focus-first="false"/> <span class="input-group-addon">
+                  typeahead-focus-first="false"
+                  ng-keydown="$event.which === 13 && globalSearchOnSelect({type:'search', query: globalSearchModel.query}, null, null)"/> <span class="input-group-addon">
                   <i ng-show="!loadingLocations" class="fa fa-search"></i> <i ng-show="loadingLocations" class="fa fa-spin fa-refresh"></i>
                 </span>
               </div>
-            </form>
+            </form> 
           </div>
           <!-- /.navbar-collapse -->
         </div>
@@ -90,3 +91,9 @@
   </div>
   <div></div>
 </header>
+
+<script type="text/ng-template" id="globalSearchTemplate.html">
+  <div class="typeahead-result">
+    <span ng-bind-html="match.model.name | uibTypeaheadHighlight:query"></span>
+  </div>
+</script>
