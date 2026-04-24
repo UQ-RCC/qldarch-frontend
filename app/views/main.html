@@ -1,7 +1,7 @@
 <div class="content">
   <div class="jumbotron">
-    <div uib-carousel interval="slidesInterval">
-      <div uib-slide ng-repeat="slide in slides" active="slide.active">
+    <div uib-carousel active="activeSlide"  interval="slidesInterval">
+      <div uib-slide ng-repeat="slide in slides track by $index" index="$index" active="slide.active">
         <img ng-src="{{ slide.image }}">
         <div class="carousel-caption" ng-bind-html="slide.caption"></div>
       </div>
