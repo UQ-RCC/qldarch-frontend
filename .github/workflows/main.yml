@@ -12,12 +12,13 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       
       - name: Set version
         run: echo "latest" > version.txt
 
-      - uses: actions/setup-node@v3
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: '18.x'
 
@@ -25,12 +26,13 @@ jobs:
         run: npm install -g yo bower grunt-cli generator-karma generator-angular
       
       - name: Build with Grunt
-        run: npm install && bower install && grunt build --force
+        run: npm install && bower install --allow-root --force-latest && grunt build --force
 
       - name: Git tag
         run: git tag -f snapshot && git push --tags -f
 
-      - uses: meeDamian/github-release@2.0
+      - name: Release
+        uses: softprops/action-gh-release@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: snapshot

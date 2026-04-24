@@ -34,7 +34,7 @@
     "angular-ui-tinymce": "~0.0.19",
     "ui-leaflet": "~2.0.0",
     "Leaflet.awesome-markers": "~2.0.2",
-    "leaflet.markercluster": "leaflet-0.7",
+    "leaflet.markercluster": "Leaflet/Leaflet.markercluster#leaflet-0.7",
     "angular-media-player": "~0.5.8",
     "js-xlsx": "^0.18.5"
    
@@ -42,5 +42,11 @@
   "devDependencies": {
     "angular-mocks": "~1.6.5",
     "angular-scenario": "~1.6.5"
+  },
+  "resolutions": {
+    "angular": "1.6.10",
+    "jquery": "1.9.1",
+    "angular-animate": "1.6.10",
+    "leaflet": "0.7.7"
   }
 }
