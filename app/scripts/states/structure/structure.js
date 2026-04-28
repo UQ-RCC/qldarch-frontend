@@ -6,6 +6,9 @@ angular.module('qldarchApp').config(function($stateProvider) {
     url : '/project?structureId',
     templateUrl : 'views/structure/layout.html',
     resolve : {
+      structures : [ 'AggArchObjs', function(AggArchObjs) {
+        return AggArchObjs.loadAllProjects();
+      } ],
       structure : [ '$stateParams', 'ArchObj', '$filter', function($stateParams, ArchObj, $filter) {
         if (!$stateParams.structureId) {
           return {};

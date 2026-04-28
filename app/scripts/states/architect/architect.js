@@ -6,6 +6,17 @@ angular.module('qldarchApp').config(function($stateProvider) {
     url : '/architect?architectId',
     templateUrl : 'views/architect/layout.html',
     resolve : {
+      architects : [ 'AggArchObjs', 'GraphHelper', '$filter', function(AggArchObjs, GraphHelper, $filter) {
+            return AggArchObjs.loadArchitects().then(function(data) {
+              var architects = GraphHelper.graphValues(data);
+              return $filter('filter')(architects, function(architect) {
+                return architect.label && !(/\s/.test(architect.label.substring(0, 1)));
+              });
+            }).catch(function() {
+              //console.log('unable to load all architects');
+              return {};
+            });
+          } ],
       architect : [ '$stateParams', 'ArchObj', '$filter', function($stateParams, ArchObj, $filter) {
         if (!$stateParams.architectId) {
           return {};

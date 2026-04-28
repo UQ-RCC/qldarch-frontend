@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('qldarchApp').controller('StructureCtrl', function($scope, structure, designers, ArchObj, firms, architects, $filter, buildingTypologies, $state, $q, $stateParams, Utils, toaster, ngProgress) {
+angular.module('qldarchApp').controller('StructureCtrl', function($scope, structure, designers, ArchObj, firms, architects, $filter, buildingTypologies, $state, $q, $stateParams, Utils, toaster, ngProgress, structures) {
       /* globals $:false */
 	
 	$scope.structure = structure;
@@ -10,6 +10,8 @@ angular.module('qldarchApp').controller('StructureCtrl', function($scope, struct
 	$scope.records=null;
 	$scope.payload = {};
 	$scope.processing =false;
+	$scope.filterProjects = [];
+
 
 
 	//DropZone file handling
@@ -19,6 +21,57 @@ angular.module('qldarchApp').controller('StructureCtrl', function($scope, struct
             $scope.updateBulkStructures($scope.structure, files);
         }
     });
+
+	
+	//duplicate check
+	 $scope.filterProjects = function(input) {
+      
+      if (!input) {
+        $scope.filterProjects = [];
+        $scope.isDuplicate = false;
+        $scope.exactMatch = null;
+        return;
+      }
+
+      const term = input.trim().toLowerCase();
+
+      let exactMatch = null;
+      let contains = [];
+
+      structures.forEach(function(p) {
+        if (!p.label) return;
+
+        const label = p.label.toLowerCase();
+
+        console.log('checking:', p.label);
+
+        //  exact duplicate
+        if (label === term) {
+          exactMatch = p;
+        }
+       
+        // fallback relevance
+        else if (label.includes(term)) {
+          contains.push(p);
+        }
+      });
+
+      // duplicate found
+      if (exactMatch) {
+        $scope.isDuplicate = true;
+        $scope.exactMatch = exactMatch;
+        $scope.filteredProjects = [exactMatch];
+        return;
+      }
+
+      //  no duplicate
+      $scope.isDuplicate = false;
+      $scope.exactMatch = null;
+
+      //  ranked results (limit for UI performance)
+      $scope.filteredProjects = contains.slice(0, 10);
+  };
+
       
      
       /*
@@ -77,7 +130,9 @@ angular.module('qldarchApp').controller('StructureCtrl', function($scope, struct
 	multiple : true,
 	allowClear : true,
 	data : Utils.makeSelectOptions(firms)
+	
 	};
+	
 
 	$scope.structure.$associatedArchitects = null;
 	if (angular.isDefined(designers.architects)) {
@@ -690,7 +745,22 @@ angular.module('qldarchApp').controller('StructureCtrl', function($scope, struct
 			promises.push(promise);
 		} else {
 			console.log("inside create")
-			console.log(data)
+			console.log(data.label)
+
+			if (!data.label || !data.label.trim()) {  
+        		return;
+      		}
+      		const newLabel = data.label.trim().toLowerCase();
+      		const duplicate = structures.find(function(f) {
+        	return f.label &&
+              f.label.trim().toLowerCase() === newLabel;
+      		});
+      		if (duplicate) {
+        		//console.log('Firm already exists');
+         		toaster.pop('error', 'Error occured', "Duplicate structure label: '" + data.label + "'. Please choose a different name.");
+        		return;
+      		}
+
 			promise = ArchObj.createStructure(data).then(function(res) {
 			return res;
 			}).catch(function(error) {

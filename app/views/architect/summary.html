@@ -21,11 +21,29 @@
         <form name="form" ng-submit="updateArchitect(architect)">
           <div class="form-group">
             <label for="">First Name <i class="fa fa-asterisk fa-asterisk-required"></i></label> <input type="text" class="form-control"
-              placeholder="First Name" ng-model="architect.firstname" required>
+              placeholder="First Name" ng-model="architect.firstname"  required ng-change="filterArchitects()" >
+             
           </div>
           <div class="form-group">
             <label for="">Last Name <i class="fa fa-asterisk fa-asterisk-required"></i></label> <input type="text" class="form-control"
-              placeholder="Last Name" ng-model="architect.lastname" required>
+              placeholder="Last Name" ng-model="architect.lastname" ng-change="filterArchitects()" required>
+              
+              <ul class="dropdown-menu"
+    style="display:block; position:relative; width:100%; max-height:150px; overflow-y:auto;"
+    ng-show="filteredArchitects && filteredArchitects.length">
+
+  <li class="dropdown-item"
+      style="padding:8px;"
+      ng-repeat="a in filteredArchitects">
+
+    {{ a.firstname }} {{ a.lastname }}
+
+  </li>
+</ul>
+          </div>
+          <div class="alert alert-danger" ng-show="isDuplicate">
+             This architect already exists: 
+            {{ exactMatch.firstname }} {{ exactMatch.lastname }}
           </div>
           <div class="form-group">
             <label for="">Also known as <i class="fa fa-info-circle"
