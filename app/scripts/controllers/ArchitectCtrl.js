@@ -25,7 +25,7 @@ angular.module('qldarchApp').controller('ArchitectCtrl', function($scope, archit
         return;
       }
 
-      let exact = null;
+      let exactMatch = null;
       let results = [];
 
       architects.forEach(function(a) {
@@ -33,7 +33,7 @@ angular.module('qldarchApp').controller('ArchitectCtrl', function($scope, archit
         const full = ((a.firstname || '') + ' ' + (a.lastname || '')).trim().toLowerCase();
 
         if (full === term) {
-          exact = a;
+          exactMatch = a;
         }
 
         if (full.includes(term)) {
@@ -42,10 +42,10 @@ angular.module('qldarchApp').controller('ArchitectCtrl', function($scope, archit
       });
 
       // duplicate detected
-      if (exact) {
+      if (exactMatch) {
         $scope.isDuplicate = true;
-        $scope.exactMatch = exact;
-        $scope.filteredArchitects = [exact];
+        $scope.exactMatch = exactMatch;
+        $scope.filteredArchitects = [exactMatch];
         return;
       }
 
