@@ -35,8 +35,8 @@ angular.module('qldarchApp').controller('StructureCtrl', function($scope, struct
 
       const term = input.trim().toLowerCase();
 
-      let exactMatch = null;
-      let contains = [];
+      var exactMatch = null;
+      var contains = [];
 
       structures.forEach(function(p) {
         if (!p.label) return;

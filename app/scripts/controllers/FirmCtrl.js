@@ -44,8 +44,8 @@ angular.module('qldarchApp').controller('FirmCtrl', function($scope, $filter, fi
 
       const term = input.trim().toLowerCase();
 
-      let exactMatch = null;
-      let contains = [];
+      var exactMatch = null;
+      var contains = [];
 
       firms.forEach(function(f) {
         if (!f.label) return;

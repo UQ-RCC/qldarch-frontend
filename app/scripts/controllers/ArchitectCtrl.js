@@ -25,8 +25,8 @@ angular.module('qldarchApp').controller('ArchitectCtrl', function($scope, archit
         return;
       }
 
-      let exactMatch = null;
-      let results = [];
+      var exactMatch = null;
+      var results = [];
 
       architects.forEach(function(a) {
 
