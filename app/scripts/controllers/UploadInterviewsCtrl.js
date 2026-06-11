@@ -4,6 +4,7 @@ angular.module('qldarchApp').controller('UploadInterviewsCtrl',
     function($scope, interview, person, $filter, $cacheFactory, File, toaster, $state, $stateParams, ArchObj, Utils) {
 
       $scope.interview = interview;
+      $scope.dropSupported = true;
       
       
 
@@ -43,6 +44,28 @@ angular.module('qldarchApp').controller('UploadInterviewsCtrl',
         multiple : true,
         data : Utils.makeSelectOptions(person)
       };
+
+      // Watch for drag-and-drop file changes for media
+      $scope.$watch('$mediafile', function(files) {
+        if (files && files.length) {
+          var file = files[0];
+          var filetype = file.type;
+          if (filetype.indexOf('video') !== -1) {
+            $scope.interview.type = 'Video';
+          }
+          if (filetype.indexOf('audio') !== -1) {
+            $scope.interview.type = 'Audio';
+          }
+          uploadMedia($scope.interview, file);
+        }
+      });
+
+      // Watch for drag-and-drop file changes for transcript
+      $scope.$watch('$transcriptfile', function(files) {
+        if (files && files.length) {
+          uploadTranscript($scope.interview, files[0]);
+        }
+      });
 
       $scope.interview.$youtubeUrl = null;
       if (angular.isDefined(interview.media)) {

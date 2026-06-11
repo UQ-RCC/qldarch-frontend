@@ -52,10 +52,9 @@
     <div class="container">
       <form>
         <div class="form-group upload">
-          <div ng-file-drop ng-model="$files" ng-file-drag-over-class="upload-dropzone-dragover" ng-show="dropSupported" class="upload-dropzone">
+          <div ng-file-drop ng-model="$files" ng-file-drag-over-class="upload-dropzone-dragover" class="upload-dropzone">
             <i class="fa fa-cloud-upload"></i> Drag and Drop files here
           </div>
-          <div ng-file-drop-available="dropSupported=true" ng-show="!dropSupported">HTML5 Drop File is not supported!</div>
           <div class="upload-choose">
             <div class="upload-choose-label">Or select files</div>
             <input type="file" ng-file-select ng-model="$files" multiple>

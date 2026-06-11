@@ -7,6 +7,9 @@ angular.module('qldarchApp').controller('UploadDocumentsCtrl', function($scope, 
     label : $stateParams.name
   };
 
+  $scope.dropSupported = true;
+  $scope.expressions = [];
+
   function goToArticles() {
     var params = {};
     if ($stateParams.type === 'person') {
@@ -23,7 +26,12 @@ angular.module('qldarchApp').controller('UploadDocumentsCtrl', function($scope, 
     }
   }
 
-  $scope.expressions = [];
+  // Watch for drag-and-drop file changes
+  $scope.$watch('$files', function(files) {
+    if (files && files.length) {
+      $scope.onFileSelect(files, $scope.article);
+    }
+  });
 
   $scope.onFileSelect = function($files, article) {
     // $files: an array of files selected, each file has name, size, and

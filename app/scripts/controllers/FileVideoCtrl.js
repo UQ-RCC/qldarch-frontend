@@ -20,6 +20,7 @@ angular.module('qldarchApp').controller('FileVideoCtrl',
       }
 
       $scope.expressions = [];
+      $scope.dropSupported = true;
 
       // Setup the entity select boxes
       $scope.archObjSelect = {
@@ -34,6 +35,13 @@ angular.module('qldarchApp').controller('FileVideoCtrl',
         $scope.selectedObj = Utils.findEntity($scope.archObjSelect.data, $stateParams.id);
         $scope.selectedTitle = $stateParams.name;
       }
+
+      // Watch for drag-and-drop file changes
+      $scope.$watch('$files', function(files) {
+        if (files && files.length) {
+          $scope.onFileSelect(files);
+        }
+      });
 
       $scope.onFileSelect = function($files) {
         // $files: an array of files selected, each file has name, size, and
